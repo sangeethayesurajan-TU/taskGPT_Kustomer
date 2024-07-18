@@ -7,6 +7,7 @@ class Api {
     constructor() {
         this.baseUrl = process.env.API_BASE_URL;
         this.apiToken = process.env.API_TOKEN;
+        // this.apiToken = process.env.chat_conversation_02_new_sand;        
     }
 
     async postAppToOrg(appDefinition) {

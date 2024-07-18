@@ -1,0 +1,204 @@
+{
+  "app": "taskgpt",
+  "version": "1.0.0",
+  "description": "TaskGPT is a Generative AI powered suite of products with GPT technology.\n\nTaskGPT is a Generative AI powered suite of solutions, utilizing GPT technology, designed to assist chat-based customer support representatives. It effectively handles customer queries by searching through a knowledge base of campaign information and presenting relevant responses from various articles. Each response is accompanied by a confidence score, indicating its reliability and potential impact on the representatives answers. The higher the score, the more influential it can be in shaping the responses provided by the support representatives.\n\nAdditionally, TaskGPT empowers the representatives with the flexibility to customize the selected response, allowing them to tailor it according to the ongoing conversation with customers. This ensures that the responses align seamlessly with the current flow of the interaction.\n\n**Note:** TaskGPT will not store user's any personal data, information, or any kind of sensitive data.\n**To install the TaskGPT App by TaskUs, please follow the below steps:**\n\n**Step 1:** Install the TaskGPT app through the Kustomer Marketplace.\n\n**Step 2:** To register your account, please contact us at [TaskGPT@taskus.com](mailto:TaskGPT@taskus.com).\n\n**Step 3:** Once the installation is complete, the app will be available in your Kustomer, currently viewing section, accessible by clicking on the ticket.\n\nIf you encounter any issues during the installation process, please contact our support team at [TaskGPT@taskus.com](mailto:TaskGPT@taskus.com) for assistance.",
+  "commands": [
+    {
+      "name": "setting_api",
+      "displayName": "Setting",
+      "cacheSeconds": 15,
+      "httpMethod": "post",
+      "appSettings": {
+        "apikey": {
+          "key": "taskgpt.default.apikey"
+        },
+        "authtoken": {
+          "key": "taskgpt.default.authtoken"
+        }
+      }
+    },
+    {
+      "name": "login_api",
+      "displayName": "Login",
+      "cacheSeconds": 15,
+      "httpMethod": "post"
+    },
+    {
+      "name": "generate_authtoken_api",
+      "displayName": "Generatetoken",
+      "cacheSeconds": 15,
+      "httpMethod": "post"
+    },
+    {
+      "name": "auto_suggest_api",
+      "displayName": "Autosuggest",
+      "cacheSeconds": 15,
+      "httpMethod": "post"
+    },
+    {
+      "name": "logs_api",
+      "displayName": "Logsapi",
+      "cacheSeconds": 15,
+      "httpMethod": "post"
+    },
+    {
+      "name": "heartbeat_api",
+      "displayName": "Heartbeatapi",
+      "url": "https://orchestrator.taskus.com/api/settings/{{user_setting}}/exthealth",
+      "cacheSeconds": 15,
+      "httpMethod": "get",
+      "permittedUrlArgs": [
+        "user_setting"
+      ]
+    }
+  ],
+  "settings": {
+    "default": {
+      "authtoken": {
+        "type": "secret",
+        "description": "EXTERNAL AUTH TOKEN"
+      },
+      "apikey": {
+        "type": "secret",
+        "description": "External API Key"
+      },
+      "url_def": {
+        "type": "string"
+      }
+    }
+  },
+  "appDetails": {
+    "appDeveloper": {
+      "name": "TaskUs",
+      "website": "https://www.taskus.com/",
+      "supportEmail": "TaskGPT@taskus.com"
+    },
+    "externalPlatform": {
+      "name": "TaskUs",
+      "website": "https://www.taskus.com/"
+    }
+  },
+  "title": "TaskGPT",
+  "postInstallMessage": "Congratulations! You've installed TaskGPT app!",
+  "kviews": [
+    {
+      "name": "taskgpt",
+      "template": "\n    if (appSettings && appSettings.default) {\n      const { useState, useEffect } = React;   \n
+ \n      //generate Auth Token API\n      async function generateTokenApi(user_setting_response, emailId, isAuthuu) {\n        
+try {\n          const model_type = user_setting_response.settings.Zendesk_PromptoGPT_modeltype;\n          const usecase = user_setting_response.settings.Zendesk_PromptoGPT_usecase;\n\n          const promptoGPT_toggle = user_setting_response.settings.Zendesk_PromptoGPT_toggle;\n          const knowledgeAssist_toggle = user_setting_response.settings.Zendesk_KnowledgeAssist_toggle;\n\n          const apitoken = user_setting_response?.settings.x_apitoken;\n          const apikey = user_setting_response?.settings.x_apikey;\n          let endpoint = '/v1/commands/' + isAuthuu.appId + '.app.generate_authtoken_api/run';\n          let authResponse = await KustomerRequest({\n            url: endpoint,\n            method: 'POST',\n            body: {\n      
+        \"headers\": {\n                \"Content-Type\": \"application/json\",\n                \"x-apitoken\": apitoken,\n   
+             \"x-apikey\": apikey,\n                \"CF-Access-Client-Id\": user_setting_response?.settings.CF_Access_Client_Id,\n                \"CF-Access-Client-Secret\": user_setting_response?.settings.CF_Access_Client_Secret\n              },\n   
+           \"body\": {\n                \"email\": emailId\n              }\n            }\n          },\n            (err, response) => {\n              if (err) {\n                console.log(\"Into 1\")\n                return 'Failed to process return'\n              } else if (response.responseBody.errors) {\n                console.log(\"Into 2\")\n                return response.responseBody.errors.message;\n              }\n            }\n          );\n          const data = authResponse?.data?.attributes?.responseBody;\n          const authToken = data.authToken;\n          const clientAuthToken = data.clientAuthToken;\n          return { authToken, clientAuthToken, model_type, usecase, promptoGPT_toggle, knowledgeAssist_toggle }\n        } catch (err) {\n          console.log(\"Error in generateTokenApi::\", err);\n        }\n      }  \n\n      const createPayload = 
+(module, action) => {\n        return [\n          {\n            module: module,\n            event: action,\n          },\n  
+      ];\n      };\n        \n      async function logsAPI({ isAuthuu, user_setting, PAYLOAD_FOR_EVENT, UUID = null, log_message = null }) {\n        let app_version = \"1.0.0\"\n        try {\n          let endpoint = '/v1/commands/' + isAuthuu.appId + 
+'.app.logs_api/run'\n          let auth = 'Bearer' + \" \" + user_setting?.authToken\n          await KustomerRequest({\n      
+      url: endpoint,\n            method: 'POST',\n            body: {\n              \"headers\": {\n                \"Authorization\": auth,\n                \"Content-Type\": \"application/json\"\n              },\n              \"body\": {\n
+       \"user_email\": user_setting.email,\n                \"applicationName\": \"PromptoGPT\",\n                \"event_list\": PAYLOAD_FOR_EVENT,\n                \"user_id\": user_setting.user_id,\n                \"app_id\": user_setting.app_id,\n  
+              \"app_name\": \"PromptoGPT\",\n                \"campaign_name\": user_setting.campaign_name,\n                \"campaign_id\": user_setting.campaign_id,\n                \"lob_id\": user_setting.lob_id,\n                \"lob_name\": user_setting.lob_name,\n                \"currentUserAppVersion\": app_version,\n                \"uuid\": UUID,\n                \"log_message\": log_message\n              }\n            }\n          },\n            (err, response) => {\n              if (err) {\n                console.log(\"Into 1\")\n                return 'Failed to process return'\n              } else if (response.responseBody.errors) {\n                console.log(\"Into 2\")\n                return response.responseBody.errors.message;\n              }\n            }\n          );\n        } catch (error) {\n          console.log(\"Error in logsAPI::\", error);\n        }\n      }\n\n      const MyComponent = window.__myComponent12345 || (window.__myComponent12345 =\n      function MyComponent(props) {\n        const {\n          conversation,\n          appSettings\n        } = props;\n\n        const [isLoggedStatus, setLoggedStatus] = useState(sessionStorage.getItem('isLoggedIn') === 'true');\n        const [isSettingStatus, setSettingStatus] = useState(sessionStorage.getItem('settingStatus') === 'true');\n        const [name, changeName] = useState('');\n        const [ischeckboxType, setCheckboxType] = useState('');\n        const [isLoading, setLoading] = useState(false);\n        const [prompt_res, setPrompt_res] = useState(null);\n        const [isApiCall, setApiCall] = useState(true);\n        
+const [generateToken, setGenerateToken] = useState({});\n        const [conv_id, setConv_id] = useState('');\n        const [isEmail, setEmail] = useState('');\n        const [isAuthuu, setAuthuu] = useState({});\n        const[lastUserRes, setLastUserRes] = useState('');\n        const[settingreg, setSettingreg] = useState({});\n        const [isAutoLoading, setAutoLoading] = useState(false);\n        const [copied, setCopied] = useState(null);\n\n        function generateUUID() {\n          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {\n            const r = (Math.random() * 16) | 0;\n
+   const v = c === 'x' ? r : (r & 0x3) | 0x8;\n            return v.toString(16);\n          });\n        }\n\n        async function autoSuggestApi(user_email, latestmsgfromuser, model_type, use_case, auth_token, isAuthuu, user_setting_infos) {\n       
+   setAutoLoading(true);\n          let unique_uuid = generateUUID();\n          const payload = createPayload(\n            'Kustomer_PromptoGPT_Request_Query_Started',\n            'Success'\n          );\n          await logsAPI({isAuthuu: isAuthuu, user_setting: user_setting_infos, PAYLOAD_FOR_EVENT: payload, UUID: unique_uuid });\n          try {\n            let endpoint = '/v1/commands/' + isAuthuu.appId + '.app.auto_suggest_api/run';\n            let response = await KustomerRequest({\n
+     url: endpoint,\n              method: \"POST\",\n              body: {\n                \"headers\": {\n
+\"Content-Type\": \"application/json\",\n                  \"X-Authtoken\": auth_token\n                },\n                \"body\": {\n                  \"user_id\": user_email,\n                  \"question\": latestmsgfromuser,\n                  \"model_type\": model_type.toLowerCase(),\n                  \"usecase\": use_case.toLowerCase(),\n                  \"enable_automasking\": true\n                }\n              }\n            },\n              (err, response) => {\n                if (err) {\n                  console.log(\"Into 1\")\n                  return 'Failed to process return'\n                } else if (response.responseBody.errors) {\n                  console.log(\"Into 2\")\n                  return response.responseBody.errors.message;\n                }\n              }\n            );\n            if (response?.data?.attributes?.responseBody) {\n              let unique_uuid = generateUUID();\n              const payload = createPayload(\n                'Kustomer_PromptoGPT_Request_Query_Completed',\n                'Success'\n              );\n              await logsAPI({ isAuthuu: isAuthuu, user_setting: user_setting_infos, PAYLOAD_FOR_EVENT: payload, UUID: unique_uuid });\n              const payload_query = createPayload(\n                'Kustomer_PromptoGPT_Request_Query',\n                'Success'\n              );\n              let unique_uuid_query = generateUUID();\n              await logsAPI({ isAuthuu: isAuthuu, user_setting: user_setting_infos, PAYLOAD_FOR_EVENT: payload_query, UUID: unique_uuid_query, log_message: latestmsgfromuser });\n              setAutoLoading(false);\n              return response?.data?.attributes?.responseBody;\n            }\n\n          } catch (error) {\n            console.log(\"Error in autoSuggestApi::\", error)\n          }\n        }\n\n        useEffect(() => {\n          let updatedAuth = {};\n          (appSettings?.default || []).forEach((item) => {\n            if (item.attributes.name === 'apikey') {\n       
+       updatedAuth.api_key = item.attributes.value;\n            }\n            if (item.attributes.name === 'authtoken') {\n  
+            updatedAuth.authtoken = item.attributes.value;\n              updatedAuth.appId = item.attributes.app;\n
+ }\n            if (item.attributes.name === 'url_def') {\n              updatedAuth.url_def = item.attributes.value;\n        
+      updatedAuth.appId = item.attributes.app;\n            }\n          });\n          setAuthuu(updatedAuth);\n        }, [appSettings?.default]);\n        \n        useEffect(() => {\n        }, [isAuthuu, prompt_res, settingreg, isAutoLoading, isEmail]);\n\n        useEffect(() => {\n          KustomerRequest({ url: '/v1/users/current' }).then(result => {\n            changeName(result.data.attributes.name);\n            setEmail(result.data.attributes.email);\n          });        \n        }, []);\n\n        useEffect(() => {\n          if (conversation) {\n            setConv_id(conversation?.id)\n          }\n
+if (conv_id) {\n            // let api_token = 'Bearer'+\" \"+process.env.API_TOKEN          \n            let endpoint = '/v1/conversations/'+conv_id+'/messages';\n            KustomerRequest({ url: endpoint, method: \"GET\"}).then((result) => {\n      
+        findLastResponse(result?.data)\n            })\n          }\n          if ((lastUserRes) && (conv_id) && (ischeckboxType == 'promptogpt')) {\n            // promptoGPTApi(isEmail, lastUserRes, generateToken?.model_type, generateToken?.usecase, generateToken?.authToken)\n            const autosuggestResponse = async () => {\n              try {\n                await showPromptRes(isEmail, lastUserRes, generateToken?.model_type, generateToken?.usecase, generateToken?.authToken)\n              } catch (err) {\n                console.log(\"Error in autosuggestResponse::\", err);\n              }\n            }\n
+  autosuggestResponse();\n          }\n        }, [conversation, conv_id, generateToken, lastUserRes, ischeckboxType]);\n\n    
+    useEffect(() => {\n          if ((isSettingStatus) && (isApiCall)) {\n            if (isEmail) {\n              // settingResponse();\n              settingBtnAPI()\n            }            \n          }\n        }, [isSettingStatus, isApiCall, isEmail]);\n\n        useEffect(() => {\n          if (generateToken) {\n          }       \n        }, [generateToken]);  \n\n    
+    async function findLastResponse(result) {\n          try {\n            {\n              (result || []).map((item) => {\n  
+              if (item.attributes.direction === \"in\") {\n                  setLastUserRes(item.attributes.preview)\n
+       }\n                if (item.attributes.direction === 'out') {\n                  setLastUserRes('Agent')\n
+  }\n              })\n            };\n          } catch (error) {\n            console.log(\"Error in findLastResponse::\", result)\n          }\n        }        \n\n        //Styles\n        const divStyle = {\n          display: 'flex',\n          alignItems: \"center\",\n          gap: \"5px\"\n        };\n\n        const promptoGpt_style = {\n          padding: \"7px 5px\",\n          margin: \"10px 0px\",\n          border: \"1px solid\",\n          background: \"#D3D3D3\",\n          textAlign: 
+\"Justify\"\n        } \n          \n        const common_style = { \n          fontFamily: \"poppins\", \n          fontSize: 
+\"16px\", \n          color: \"#000000\"\n        }\n\n        async function showPromptRes(isEmail, lastUserRes, model_type, usecase, authToken) {\n          try {\n            let autosuggestResponse = await autoSuggestApi(isEmail, lastUserRes, model_type, usecase, authToken, isAuthuu, settingreg);            \n            setPrompt_res({\n              top_responses: autosuggestResponse?.top_responses,\n              top_scores: autosuggestResponse?.top_scores\n            });\n          } catch (err) {\n            console.log(\"Error in showPromptRes::\", err)\n          }\n        }\n\n        async function selectedCheckbox(value) {\n          try {\n            setCheckboxType(value)\n            if (value === 'promptogpt') {\n              const payload = createPayload(\n                'Kustomer_PromptoGPT_ON',\n                'Success'\n              );\n
+    const promptogpt_on_LogMsg = \"PromptoGPT Turned ON\";\n              if (settingreg) {\n                await logsAPI({ isAuthuu: isAuthuu, user_setting: settingreg, PAYLOAD_FOR_EVENT: payload, log_message: promptogpt_on_LogMsg });\n              } 
+                       \n              \n            } else {\n              const payload = createPayload(\n                'Kustomer_KnowledgeAssist_ON',\n                'Success'\n              );\n              const knowledgeAssist_on_LogMsg = \"KnowledgeAssist Turned ON\";\n              if (settingreg) {\n                await logsAPI({ isAuthuu: isAuthuu, user_setting: 
+settingreg, PAYLOAD_FOR_EVENT: payload, log_message: knowledgeAssist_on_LogMsg });\n              }\n            }\n          } catch (err) {\n            console.log(\"Error in selectedCheckbox::\", err)\n          }\n        }\n\n        function promptoGPTResponse() {\n          let lst_ = ['hi', 'hello', 'how are you', 'what’s up', 'hey', 'good morning', 'good evening', 'good night', 'how do you do', 'how are you?', 'what’s up?', 'how do you do?', 'how are you ?', 'what’s up ?', 'how do you do ?'];\n          \n          let data = [];\n          data = prompt_res?.top_scores.map((item, index) => {\n            if (item != 
+0) {\n              return prompt_res?.top_responses[index]\n            }\n          }).filter(response => response !== undefined);\n          try {\n            return (\n              <>\n                <div style={{\n                  ...common_style,\n                  margin: \"10px 0px 5px\",                                \n                  fontWeight: \"600\",\n      
+            color: \"#000000\",\n                  fontFamily: \"poppins\",\n                  fontSize: \"16px\"\n
+    }}>\n                  Query\n                </div>\n                <div\n                  style={{\n
+ color: \"#808080\",\n                    fontWeight: \"500\",\n                    fontSize: \"14px\",\n                    fontFamily: \"poppins\"\n                  }}\n                >\n                  {lastUserRes}\n                </div>\n\n    
+            {(isAutoLoading) ?\n                  <div style={{\n                    ...common_style,\n                    margin: \"10px 0px 5px\",\n                    fontWeight: \"600\",\n                    color: \"#000000\",\n                    fontSize: \"14px\",\n                    display: \"flex\",\n                    gap: \"8px\",\n                    fontStyle: \"normal\",\n                    alignItems: \"center\",\n                    justifyContent: \"flex-start\"\n
+}}>\n                    <span className={'loader-prompt'}></span>\n                    <span style={{\n
+ color: 'transparent',\n                        background: \"linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))\",\n                        WebkitBackgroundClip: \"text\",\n                    }}\n
+        >PromptAI</span> is writing....\n                  </div>\n                  :\n                  <div style={{\n      
+              ...common_style,\n                    margin: \"10px 0px 5px\",\n                    fontWeight: \"600\",\n      
+              color: \"#000000\"\n                  }}>\n                    Responses\n                    {(lst_.includes(lastUserRes.toLowerCase())) ?\n                      <div className={'response-box'} style={{cursor: \"not-allowed\"}}>\n
+               Small Talk Identified\n                      </div>\n                      :\n                      <>\n        
+                {(data?.length == 0) ?\n                          <div\n                            className={'response-box'}\n                            style={{cursor: \"not-allowed\"}}\n                          >\n                            {/*{item}*/}\n                            No match found for this data.\n                          </div>\n
+:\n                          <>\n                            {(data || []).map((item, index) => {\n
+  const cleanedItem = item.replace(/johns*->s*/i, \"\");\n                              const payload = createPayload(\n       
+                         'Kustomer_PromptoGPT_Received_Response',\n                                'Success'\n
+             );\n                              let unique_uuid = generateUUID();\n                              let response_received_LogMsg = 'Response_'+(index+1)+ \": \"+ cleanedItem;\n                              if (settingreg) {\n
+               logsAPI({ isAuthuu: isAuthuu, user_setting: settingreg, PAYLOAD_FOR_EVENT: payload, UUID: unique_uuid, log_message: response_received_LogMsg });\n                              }\n                              return (\n
+            <div\n                                  key={index}\n                                  className={'response-box'}\n                                  onClick={() => copyFunc(cleanedItem, index)}\n                                >\n
+                      {/*{item}*/}\n                                  {cleanedItem}\n                                  {(copied === index) && <span className={'copied-message'}>Copied</span>}\n                                </div>\n\n
+           )\n                            })}\n                          </>\n                        }\n
+</>\n                    }\n                  </div>\n                }\n              </>\n            )\n          } catch (error) {\n            console.log(\"Error in promptoGPTResponse:: \", error)\n          }\n        }\n\n        async function loginBtnAPI() {\n          setLoading(true);\n          let endpoint = '/v1/commands/' + isAuthuu.appId + '.app.login_api/run';\n          try {\n            let resdata = await KustomerRequest({\n              url: endpoint,\n              method: 'POST',\n              body: {\n                \"body\": {\n                  \"email\": isEmail\n                }\n              }\n            },\n              (err, response) => {\n                if (err) {\n                  console.log(\"Into 1\")\n  
+                return 'Failed to process return'\n                } else if (response.responseBody.errors) {\n
+  console.log(\"Into 2\")\n                  return response.responseBody.errors.message;\n                }\n              }\n            );\n            let loginResponse = resdata?.data?.attributes?.responseBody;\n            if (loginResponse?.status === true) {\n              sessionStorage.setItem('isLoggedIn', true);\n              setLoggedStatus(true);\n              setApiCall(false)\n              // settingResponse();\n              settingBtnAPI()\n            }\n          } catch (err) {\n              console.log(\"Error in loginBtnAPI::\", err)\n          }\n        }\n        async function settingBtnAPI() {\n 
+         setLoading(true)\n          let endpoint = '/v1/commands/'+isAuthuu.appId+'.app.setting_api/run';\n          try {\n  
+          let data = await KustomerRequest({\n              url: endpoint,\n              method: 'POST',\n              body: 
+{\n                \"headers\": {\n                  \"X-ApiToken\": \"{{{authtoken}}}\",\n                  \"X-ApiKey\": \"{{{apikey}}}\",\n                  \"Accept\": \"application/json\",\n                  \"Content-Type\": \"application/json\"\n 
+               },\n                \"body\": {\n                  \"email\": isEmail\n                }\n              }\n     
+       },\n              (err, response) => {\n                if (err) {\n                  console.log(\"Into 1\")\n
+         setLoading(false);\n                  return 'Failed to process return'\n                } else if (response.responseBody.errors) {\n                  console.log(\"Into 2\")\n                  return response.responseBody.errors.message;\n     
+           }\n              }\n            );\n          let settingRes = data?.data?.attributes?.responseBody\n          if (settingRes?.message === \"Authentication failed \") {\n            sessionStorage.setItem('settingStatus', false);\n
+setSettingStatus(false);\n            setLoading(false);\n          } else {\n            sessionStorage.setItem('settingStatus', true);\n            setSettingStatus(true);\n            setSettingreg(settingRes);\n            setLoading(false);\n       
+     const logMsg = \"Successfully LoggedIn\";\n            const payload = createPayload(\n              'Kustomer_LoggedIn',\n              'Success'\n            );\n            await logsAPI({ isAuthuu: isAuthuu, user_setting: settingRes, PAYLOAD_FOR_EVENT: payload, log_message: logMsg });\n            // const { authToken, clientAuthToken, model_type, usecase, promptoGPT_toggle, knowledgeAssist_toggle } = await generate_auth_client_token(settingRes, isEmail);\n            const { authToken, clientAuthToken, model_type, usecase, promptoGPT_toggle, knowledgeAssist_toggle } = await generateTokenApi(settingRes, isEmail, isAuthuu);\n            setGenerateToken(\n              {\n                authToken: authToken,\n                client_authtoken: 
+clientAuthToken,\n                promptoGPT_toggle: promptoGPT_toggle,\n                knowledgeAssist_toggle: knowledgeAssist_toggle,\n                model_type: model_type,\n                usecase: usecase\n              }\n            )\n
+ }\n          } catch (err) {\n            console.log(\"Error in settingBtnAPI::\", err)\n          }\n        }\n\n        async function logoutBtn() {\n          try {\n            setLoading(false);\n            sessionStorage.setItem('isLoggedIn', false);\n            setLoggedStatus(false);\n            setApiCall(false);\n            sessionStorage.setItem('settingStatus', false);\n            setSettingStatus(false);\n            setCheckboxType('');\n            setAutoLoading(false);\n        
+  } catch (err) {\n              console.log(\"Error in logoutBtn::\", err)\n          }\n        }\n\n        async function copyFunc(text, index) {\n          try {\n            navigator.clipboard.writeText(text)\n            .then(() => {\n
+    setCopied(index);\n              setTimeout(() => {\n                setCopied(null)\n              }, 1000); //Hide the \"Copied\" message after 2secs\n            })\n            .catch((err) => {\n              console.log(\"Failed to copy::\", err)\n            });\n          } catch (err) {\n              console.log(\"Error in copy::\", err)\n          }\n        }\n\n        function checkboxContent() {\n          try {\n            return (            \n              <div style={\n
+      { \n                  display: \"flex\", \n                  gap: \"15px\", \n                  alignItems: \"center\",\n                  border: \"1px solid #808080\",\n                  borderRadius: \"8px\",\n                  padding: \"5px 10px\"\n                }\n              }>\n              {(generateToken?.promptoGPT_toggle) &&\n                  <div style={{ ...divStyle }}>\n                    <input\n                      type=\"radio\"\n                      id=\"promptogpt\"\n 
+                     name=\"preference_type\"\n                      value={\"promptogpt\"}\n                      onClick={(e) => selectedCheckbox(e?.target?.value)}\n                      disabled={(lastUserRes === 'Agent')?true:false}\n
+       className={(lastUserRes === 'Agent')?'cursor':''}\n                    />\n                    <label for=\"promptogpt\">\n                      <span\n                        // className={gradient_text}\n                        style={{\n       
+                   color: 'transparent',\n                          background: \"linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))\",\n                          WebkitBackgroundClip: \"text\",\n
+            fontWeight: \"600\",\n                          fontSize: \"16px\",\n                          fontFamily: \"poppins\"\n                        }}\n                      >\n                        PromptAI\n                      </span>\n    
+                </label>\n                  </div>\n                }\n                {(generateToken?.knowledgeAssist_toggle) &&\n                  <div style={divStyle}>\n                    <input\n                      type=\"radio\"\n
+        id=\"knowledge_assist\"\n                      name=\"preference_type\"\n                      value={\"knowledge_assist\"}\n                      onClick={(e) => selectedCheckbox(e?.target?.value)}\n                    />\n                    <label for=\"knowledge_assist\">\n                      <span\n                        // className={gradient_text}\n
+            style={{\n                          color: 'transparent',\n                          background: \"linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))\",\n                          WebkitBackgroundClip: \"text\",\n                          fontWeight: \"600\",\n                          fontSize: \"16px\",\n
+         fontFamily: \"poppins\"\n                        }}\n                      >\n                        AssistAI\n      
+                </span>\n                    </label>\n                  </div>\n                }\n              </div>       
+    \n            )\n          } catch (err) {\n            console.log(\"Error in checkboxContent::\", err);\n          }\n   
+     }\n\n        const dashboardComponent = () => {\n          let url=isAuthuu?.url_def;\n          let token = generateToken?.client_authtoken;\n          let end_url='&email='+isEmail+'&clientType=extension';\n          let last_url=url+token+end_url;\n          return (\n            //<div style={{ padding: '15px' }}>\n            <div style={{ padding: '0px' }}>\n
+     {/*<img src='/images/logo.svg' /> TaskGPT*/}\n              <div style={{\n                  display: \"flex\", \n        
+          justifyContent: \"space-between\",\n                  alignItems: \"center\"\n                }}\n              >\n  
+              <div\n                  style={{ \n                    ...common_style,\n                    margin: \"10px 0px\",\n                    fontWeight: \"500\"\n                  }}\n                >\n                  Welcome, <span style={{ 
+fontWeight: \"600\" }}>{name}</span>\n                </div>\n                <div style={{\n                  textDecoration: 
+\"underline\",\n                  fontSize: \"15px\",\n                  fontFamily: \"Poppins\",\n                  color: \"#005EFF\",\n                  cursor: \"pointer\",\n                  }}\n                  onClick={() => logoutBtn()}\n       
+         >\n                  Logout\n                </div>\n              </div>\n              \n              {checkboxContent()}\n              <>\n                {(ischeckboxType == 'promptogpt') ?\n                  <>\n                    {(lastUserRes !== \"Agent\") ?  promptoGPTResponse()  : <></>}\n                  </>\n                  :\n                  ((ischeckboxType == 'knowledge_assist') ?\n                      // (generateToken?.client_authtoken) &&\n                    <div style={{ margin: \"10px 0px 0px\" }}>\n                      \n                      <iframe\n                        id=\"taskgpt\"\n                        src={last_url}\n                        // allow = \"clipboard-read; clipboard-write\"\n
+             style={{\n                          height: '453px',\n                          width: \"100%\"\n
+       }}                  \n                      >\n\n                      </iframe>\n\n                    </div>\n        
+            :\n                    <></>\n                  )\n                }\n              </>\n            </div >\n     
+     )\n        }      \n\n        const loginComponent = () => {\n          return (\n            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: \"12px 0px 0px\"}}>\n              <div>\n                <div \n                  style={{\n                    margin: \"0px 0px 10px\",\n                    fontFamily: \"poppins\",\n      
+              fontSize: \"16px\",\n                    fontWeight: \"600\",\n                    color: \"#282829\"\n
+        }}\n                >\n                  Email\n                </div>\n                <input\n                  style={\n                    {\n                      padding: '10px',\n                      border: '1px solid #B3B3B3',\n        
+              background: '#FFFFFF',\n                      borderRadius: '8px',\n                      color: '#808080',\n    
+                  fontFamily: 'Poppins',\n                      fontSize: '16px',\n                      width: '100%',\n      
+                outline: 'none'\n                    }\n                  }\n                  id=\"email_id\"\n
+   value={isEmail}\n                  readOnly\n                />\n              </div>\n              {!(isLoading) ?\n      
+          <button\n                  style={{\n                    padding: \"12px 48px\",\n                    borderRadius: \"40px\",\n                    background: \" #005EFF\",\n                    color: \"#FFFFFF\",\n                    border: \"1px solid #005EFF\",\n                    margin: \"21px 0px 11px\",\n                    fontFamily: 'Poppins',\n
+        fontSize: '16px',\n                    cursor: 'pointer'\n                  }}\n                  onClick={() => loginBtnAPI()}\n                >\n                  Login\n                </button>\n                :\n                <button\n  
+                style={{\n                    display: \"flex\",\n                    justifyContent: \"center\",\n
+        gap: \"8px\",\n                    alignItems: \"center\",\n                    padding: \"12px 48px\",\n
+      borderRadius: \"40px\",\n                    background: \" #005EFF\",\n                    color: \"#FFFFFF\",\n        
+            border: \"1px solid #005EFF\",\n                    margin: \"21px 0px 11px\",\n                    fontFamily: 'Poppins',\n                    fontSize: '16px',\n                    cursor: 'not-allowed'\n                  }}\n
+    disabled\n                >\n                  <span className={'loader'}></span>  Loading...\n                </button>\n\n              }\n            </div >\n          )\n        }\n\n        const footerPart = () => {\n          const currentYear = new Date().getFullYear();\n          return (\n            <div style={{\n              fontSize: \"14px\",\n
+fontWeight: \"500\",\n              fontFamily: \"poppins\",\n              margin: \"10px 0px\",\n              textAlign: \"center\",\n              color: \"#000000\"\n              }}\n            >\n              <p>Version: 1.0.0 | TaskUs @ {currentYear} | <a style={{color: \"#005EFF\", textDecoration: \"underline\"}} href=\"https://www.taskus.com/security/\" target=\"_blank\">Security</a></p>\n            </div>\n          )\n        }\n\n        return (\n          // <div style={{padding: \"10px\"}}>\n          <div style={{padding: \"5px\"}}>\n            {(!(isSettingStatus)) && loginComponent()}\n            {((isLoggedStatus) && (isSettingStatus)) && dashboardComponent()}\n            {footerPart()}\n            <style>{`\n  .actionBtn{\n 
+   width:100%;\n    height: 40px;\n    color:white;\n  }\n    \n  .actionBtn:hover{\n    background-color: pink !important;\n  
+}\n\n  .loader {\n    border: 3px solid #f3f3f3;\n    border-radius: 50%;\n    border-top: 3px dashed rgb(255, 255, 255);\n    
+border-right: 3px dashed rgb(255, 255, 255);\n    border-bottom: 3px dashed rgb(255, 255, 255);\n    border-left: 3px dashed rgb(255, 255, 255);\n    width: 20px;\n    height: 20px;\n    -webkit-animation: spin 2s linear infinite;\n    animation: spin 2s linear infinite;\n  }\n\n  .response-box {\n    position: relative;\n    margin: 10px 0px;\n    border: 1px solid;\n    background: #D3D3D3;\n    text-align: justify;\n    cursor: pointer;\n    padding: 7px 10px;\n    background: #FFFFFF;\n    border: 1px solid #B3B3B3;\n    border-radius: 8px;\n    color: #282829;\n    font-family: \"poppins\";\n    font-weight: 400;\n    font-size: 12px;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n    transition: background-color 0.2s ease-in-out;\n  }\n\n  .response-box:hover {\n    background-color: #ebebeb;\n  }\n\n  .loader-prompt {\n    border: 3px solid rgb(153, 8, 220);\n    border-radius: 50%;\n    border-top: 3px dashed rgb(153, 8, 220);\n    border-right: 3px dashed rgb(153, 8, 220);\n    border-bottom: 3px dashed rgb(153, 8, 220);\n    border-left: 3px dashed rgb(153, 8, 220);\n    width: 16px;\n    height: 16px;\n    -webkit-animation: spin 2s linear infinite;\n    animation: spin 2s linear infinite;\n  }\n\n  .copied-message {\n    position: absolute;\n    top: -20px;\n    right: 151px;\n    background-color: #005EFF;\n    color: white;\n    padding: 4px 8px;\n    font-size: 12px;\n    font-family: \"poppins\";\n    border-radius: 5px;\n    animation: fadeOut 2s forwards;\n  }\n\n  @keyframes fadeOut {\n    0% {\n      opacity: 1;\n    }\n    100% {\n      opacity: 0;\n    }\n  }\n\n  @-webkit-keyframes spin {\n    0% { -webkit-transform: rotate(0deg); }\n    100% { -webkit-transform: rotate(360deg); }\n  }\n\n  @keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n  }\n\n`}</style>\n          </div>\n        )\n      });\n    <MyComponent \n      conversation={conversation}\n      appSettings={appSettings}\n    />     \n    \n    }\n    \n    \n  ",   
+      "context": "smartbar-card",
+      "resource": "conversation",
+      "meta": {
+        "displayName": "TaskGPT",
+        "icon": "earth",
+        "state": "open"
+      }
+    }
+  ]
+}
