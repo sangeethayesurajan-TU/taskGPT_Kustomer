@@ -226,6 +226,7 @@ export default {
         const[settingreg, setSettingreg] = useState({});
         const [isAutoLoading, setAutoLoading] = useState(false);
         const [copied, setCopied] = useState(null);
+        const [channelType, setChannelType] = useState(null);
 
         function generateUUID() {
           return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -313,7 +314,7 @@ export default {
         }, [appSettings?.default]);
         
         useEffect(() => {
-        }, [isAuthuu, prompt_res, settingreg, isAutoLoading, isEmail]);
+        }, [isAuthuu, prompt_res, settingreg, isAutoLoading, isEmail, channelType]);
 
         useEffect(() => {
           KustomerRequest({ url: '/v1/users/current' }).then(result => {
@@ -369,6 +370,9 @@ export default {
                 }
                 if (item.attributes.direction === 'out') {
                   setLastUserRes('Agent')
+                }
+                if (item.attributes.channel === 'email') {
+                  setChannelType("email")
                 }
               })
             };
@@ -705,7 +709,7 @@ export default {
                       name="preference_type"
                       value={"promptogpt"}
                       onClick={(e) => selectedCheckbox(e?.target?.value)}
-                      disabled={(lastUserRes === 'Agent')?true:false}
+                      disabled={((lastUserRes === 'Agent') || (channelType === "email"))?true:false}
                       className={(lastUserRes === 'Agent')?'cursor':''}
                     />
                     <label for="promptogpt">
