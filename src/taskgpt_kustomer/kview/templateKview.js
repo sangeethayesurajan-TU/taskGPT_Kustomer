@@ -701,7 +701,7 @@ export default {
                   padding: "5px 10px"
                 }
               }>
-              {(generateToken?.promptoGPT_toggle) &&
+              {(generateToken?.promptoGPT_toggle === "true") &&
                   <div style={{ ...divStyle }}>
                     <input
                       type="radio"
@@ -729,7 +729,7 @@ export default {
                     </label>
                   </div>
                 }
-                {(generateToken?.knowledgeAssist_toggle) &&
+                {(generateToken?.knowledgeAssist_toggle === "true") &&
                   <div style={divStyle}>
                     <input
                       type="radio"
