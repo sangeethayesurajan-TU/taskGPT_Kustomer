@@ -50,12 +50,12 @@ let styledata = `
   }
 
   .loader-prompt {
-    border: 3px solid rgb(153, 8, 220);
+    border: 3px solid #000000;
     border-radius: 50%;
-    border-top: 3px dashed rgb(153, 8, 220);
-    border-right: 3px dashed rgb(153, 8, 220);
-    border-bottom: 3px dashed rgb(153, 8, 220);
-    border-left: 3px dashed rgb(153, 8, 220);
+    border-top: 3px dashed #000000;
+    border-right: 3px dashed #000000;
+    border-bottom: 3px dashed #000000;
+    border-left: 3px dashed #000000;
     width: 16px;
     height: 16px;
     -webkit-animation: spin 2s linear infinite;
@@ -490,11 +490,12 @@ export default {
                   }}>
                     <span className={'loader-prompt'}></span>
                     <span style={{
-                        color: 'transparent',
-                        background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
-                        WebkitBackgroundClip: "text",
+                        color: '#000000'
+                        // color: 'transparent',
+                        // background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
+                        // WebkitBackgroundClip: "text",
                     }}
-                    >PromptAI</span> is writing....
+                    >Prompt<sup>AI</sup></span> is writing....
                   </div>
                   :
                   <div style={{
@@ -716,15 +717,16 @@ export default {
                       <span
                         // className={gradient_text}
                         style={{
-                          color: 'transparent',
-                          background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
-                          WebkitBackgroundClip: "text",
+                          // color: 'transparent',
+                          // background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
+                          // WebkitBackgroundClip: "text",
+                          color: '#000000',
                           fontWeight: "600",
                           fontSize: "16px",
                           fontFamily: "poppins"
                         }}
                       >
-                        PromptAI
+                        Prompt<sup>AI</sup>
                       </span>
                     </label>
                   </div>
@@ -742,15 +744,16 @@ export default {
                       <span
                         // className={gradient_text}
                         style={{
-                          color: 'transparent',
-                          background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
-                          WebkitBackgroundClip: "text",
+                          // color: 'transparent',
+                          // background: "linear-gradient(to left, rgb(220, 7, 213), rgb(6, 6, 192), rgb(161, 161, 5), rgb(153, 8, 220))",
+                          // WebkitBackgroundClip: "text",
+                          color: '#000000',
                           fontWeight: "600",
                           fontSize: "16px",
                           fontFamily: "poppins"
                         }}
                       >
-                        AssistAI
+                        Assist<sup>AI</sup>
                       </span>
                     </label>
                   </div>
