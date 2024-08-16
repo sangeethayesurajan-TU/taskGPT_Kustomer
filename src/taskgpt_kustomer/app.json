@@ -6,6 +6,7 @@
     {
       "name": "setting_api",
       "displayName": "Setting",
+      "url": "https://orchestrator.taskus.com/api/settings/get?app=PromptoGPT",
       "cacheSeconds": 15,
       "httpMethod": "post",
       "appSettings": {
@@ -20,50 +21,47 @@
     {
       "name": "login_api",
       "displayName": "Login",
+      "url": "https://orchestrator.taskus.com/api/settings/usercheck?app=PromptoGPT",
       "cacheSeconds": 15,
       "httpMethod": "post"
     },
     {
       "name": "generate_authtoken_api",
       "displayName": "Generatetoken",
+      "url": "https://taskgpt-access.taskus.com/api/external/user/authToken?userInfo=true&assginedChatbots=true&clientToken=true&userAuthToken=true&externalClientType=chrome_extension&generateNewSessionId=true",
       "cacheSeconds": 15,
       "httpMethod": "post"
     },
     {
       "name": "auto_suggest_api",
       "displayName": "Autosuggest",
+      "url": "https://taskgpt-access.taskus.com/api/responses/auto_suggest",
       "cacheSeconds": 15,
       "httpMethod": "post"
     },
     {
       "name": "logs_api",
       "displayName": "Logsapi",
+      "url": "https://orchestrator.taskus.com/api/event/create?app=PromptoGPT",
       "cacheSeconds": 15,
       "httpMethod": "post"
-    },
-    {
-      "name": "heartbeat_api",
-      "displayName": "Heartbeatapi",
-      "url": "https://orchestrator.taskus.com/api/settings/{{user_setting}}/exthealth",
-      "cacheSeconds": 15,
-      "httpMethod": "get",
-      "permittedUrlArgs": [
-        "user_setting"
-      ]
     }
   ],
   "settings": {
     "default": {
       "authtoken": {
         "type": "secret",
-        "description": "EXTERNAL AUTH TOKEN"
+        "description": "EXTERNAL AUTH TOKEN",
+        "defaultValue": ""
       },
       "apikey": {
         "type": "secret",
-        "description": "External API Key"
+        "description": "External API Key",
+        "defaultValue": ""
       },
       "url_def": {
-        "type": "string"
+        "type": "string",
+        "defaultValue": "https://taskgpt-access.taskus.com/chatbot/floatingwidget?authToken="
       }
     }
   },
