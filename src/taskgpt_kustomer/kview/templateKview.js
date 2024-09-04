@@ -940,10 +940,10 @@ export default {
           </div>
         )
       });
-    <MyComponent 
-      conversation={conversation}
-      appSettings={appSettings}
-    />     
+      <MyComponent 
+        conversation={conversation}
+        appSettings={appSettings}
+      />     
     
     }
     
