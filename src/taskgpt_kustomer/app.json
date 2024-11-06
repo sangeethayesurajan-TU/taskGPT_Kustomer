@@ -71,7 +71,7 @@
       "taskgpt_apikey": {
         "type": "secret",
         "defaultValue": "",
-        "description": "External TaskGPT API Key"
+        "description": "External TaskGPT API KEY"
       },
       "taskgpt_url": {
         "type": "string",
